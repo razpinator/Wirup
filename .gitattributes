@@ -1,5 +1,12 @@
-example/css/** linguist-vendored
+# Vendor all CSS files in example
+example/css/*.css linguist-vendored
+
+# Vendor legacy/minified JS
 example/Wirup.js linguist-vendored
 Wirup.min.js linguist-generated
-dist/** linguist-generated
+Wirup.js linguist-vendored
+
+# Also handle potential future css in example
+example/**/*.css linguist-vendored
+
 
