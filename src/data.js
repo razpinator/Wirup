@@ -16,36 +16,43 @@ export const setUpdateComponentsCallback = (cb) => {
 };
 
 export const registerData = (dataItemName, value) => {
-    let _data = new Proxy(value, {
-        set: (target, property, value) => {
-            target[property] = value;
-            updateComponentsCallback(dataItemName);
-            return true;
-        },
-        deleteProperty: (target, property) => {
-            delete target[property];
-            updateComponentsCallback(dataItemName);
-            return true;
-        }
-    });
+    let _data = value;
+    if (typeof value === 'object' && value !== null) {
+        _data = new Proxy(value, {
+            set: (target, property, value) => {
+                target[property] = value;
+                updateComponentsCallback(dataItemName);
+                return true;
+            },
+            deleteProperty: (target, property) => {
+                delete target[property];
+                updateComponentsCallback(dataItemName);
+                return true;
+            }
+        });
+    }
 
     Object.defineProperty(dataStore, dataItemName, {
         get: function () {
             return _data;
         },
         set: function (newValue) {
-            _data = new Proxy(newValue, {
-                set: (target, property, value) => {
-                    target[property] = value;
-                    updateComponentsCallback(dataItemName);
-                    return true;
-                },
-                deleteProperty: (target, property) => {
-                    delete target[property];
-                    updateComponentsCallback(dataItemName);
-                    return true;
-                }
-            });
+            if (typeof newValue === 'object' && newValue !== null) {
+                _data = new Proxy(newValue, {
+                    set: (target, property, value) => {
+                        target[property] = value;
+                        updateComponentsCallback(dataItemName);
+                        return true;
+                    },
+                    deleteProperty: (target, property) => {
+                        delete target[property];
+                        updateComponentsCallback(dataItemName);
+                        return true;
+                    }
+                });
+            } else {
+                _data = newValue;
+            }
             updateComponentsCallback(dataItemName);
         },
         configurable: true

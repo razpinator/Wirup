@@ -92,8 +92,7 @@ export const getTemplate = (target) => {
                         routeParams[name] = match[idx + 1];
                     });
                     break;
-                }= i;
-                break;
+                }
             }
         }
 
