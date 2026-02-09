@@ -269,6 +269,56 @@ wu.registerAction('Action Name','Point of Action','Comment(s)');
 
 Wirup strictly recommends against using these traces to pepper the experience with adware.
 
+## Modern Features (v2.0)
+
+- **Automatic XSS Prevention**
+
+Data passed to components is now automatically sanitized to prevent Cross-Site Scripting (XSS) attacks. You can safely render user-generated content without worrying about script injection.
+
+- **Event Delegation**
+
+Handle events efficiently using the built-in delegation system. Register handlers globally and attach them using attributes.
+
+```js
+// Register the handler
+wu.registerEventHandler('sayHello', (event, data) => {
+    alert('Hello ' + data);
+});
+```
+
+```html
+<!-- Use in component -->
+<button wu-click="sayHello" wu-data="User">Click Me</button>
+```
+
+- **Route Parameters**
+
+Routing now supports named parameters. Define routes like `/user/:id` in your `views.json` and access them in your components.
+
+```json
+{
+    "viewName": "userProfile",
+    "url": "/user/:id",
+    "viewFile": "profile.html"
+}
+```
+
+```js
+// Access parameters in your code
+const params = wu.getRouteParams();
+console.log(params.id);
+```
+
+- **Next-Gen Reactivity**
+
+Wirup now uses `Proxy` objects under the hood. You can modify arrays and objects directly, and the UI will update automatically.
+
+```js
+// Works! UI updates immediately.
+wu.dataStore.popularNames.push({ index: 3, fullname: 'New Person' });
+wu.dataStore.user.name = 'Updated Name';
+```
+
 ## Wirup Architecture
 
 **Natural Data Objects**
