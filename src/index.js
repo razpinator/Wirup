@@ -137,6 +137,7 @@ const Wirup = {
     registerEventHandler: registerEventHandler,
 
     navigateTo: router.navigateTo,
+    getRouteParams: router.getRouteParams,
     
     registerData: data.registerData,
     addData: data.addData,

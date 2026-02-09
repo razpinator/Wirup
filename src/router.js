@@ -3,6 +3,7 @@ import { getElement } from './utils.js';
 
 let appLocation = window.location.pathname;
 let views = [];
+let routeParams = {};
 
 // Callback placeholders
 let renderViewComponents = () => Promise.resolve();
@@ -10,6 +11,7 @@ let initCallback = () => {};
 
 export const setRenderViewComponentsCallback = (cb) => { renderViewComponents = cb; };
 export const setInitCallback = (cb) => { initCallback = cb; };
+export const getRouteParams = () => routeParams;
 
 const getViews = (data) => {
     // If wijax returns string (it does), parse it.
@@ -67,7 +69,30 @@ export const getTemplate = (target) => {
 
         for (let i = 0; i < views.length; i++) {
             if (views[i]["url"] === url) {
-                index = i;
+                routeParams = {};
+                break;
+            }
+            
+            // Check for route parameters
+            const routePattern = views[i]["url"];
+            if (routePattern.includes(":")) {
+                const regexPattern = routePattern.replace(/:([^\s/]+)/g, '([^\\s/]+)');
+                const matcher = new RegExp('^' + regexPattern + '$');
+                const match = url.match(matcher);
+
+                if (match) {
+                    index = i;
+                    routeParams = {};
+                    
+                    // Extract param names
+                    const paramNames = (routePattern.match(/:([^\s/]+)/g) || []).map(s => s.slice(1));
+                    
+                    // Assign values
+                    paramNames.forEach((name, idx) => {
+                        routeParams[name] = match[idx + 1];
+                    });
+                    break;
+                }= i;
                 break;
             }
         }
