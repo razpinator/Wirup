@@ -14,6 +14,11 @@
             "viewName": "priceView",
             "url": "/prices",
             "viewFile": "priceView.html"
+        },
+        {
+            "viewName": "detailView",
+            "url": "/detail/:name",
+            "viewFile": "detailView.html"
         }
     ]
 }
