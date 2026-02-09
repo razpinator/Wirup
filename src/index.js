@@ -96,6 +96,30 @@ const init = (config) => {
 // Wire up router init callback
 router.setInitCallback(() => init());
 
+// Event Delegation System
+const eventHandlers = {};
+
+const registerEventHandler = (eventName, handler) => {
+    eventHandlers[eventName] = handler;
+};
+
+if (typeof document !== 'undefined') {
+    document.addEventListener('click', (e) => {
+        let target = e.target;
+        while (target && target !== document) {
+            if (target.hasAttribute && target.hasAttribute('wu-click')) {
+                const handlerName = target.getAttribute('wu-click');
+                const data = target.getAttribute('wu-data');
+                if (eventHandlers[handlerName]) {
+                    eventHandlers[handlerName](e, data);
+                }
+                break;
+            }
+            target = target.parentNode;
+        }
+    });
+}
+
 const Wirup = {
     wx: utils.getElement,
     wijax: network.wijax,
@@ -110,6 +134,8 @@ const Wirup = {
     registerProfile: actions.registerProfile,
     registerAction: actions.registerAction,
     
+    registerEventHandler: registerEventHandler,
+
     navigateTo: router.navigateTo,
     
     registerData: data.registerData,
