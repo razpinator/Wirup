@@ -1,8 +1,21 @@
-<div class="columns mt-8 col-gapless">
-    <div class="column col-3"></div>
-    <div class="column col-6">
-        <h3>Prices</h3>
+<div class="grid grid-cols-12 gap-0 mt-8">
+    <div class="col-span-12 md:col-start-4 md:col-span-6 text-center">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Prices</h3>
         <pricebox datasource="price"></pricebox>
+        
+        <div class="mt-6 flex justify-center flex-wrap gap-2">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded shadow transition-colors" 
+                onclick="const len = wu.dataStore.price.length; for(let i=1; i<=len; i++){ wu.updateData('price', i, {'adultFare': 2000, 'childFare': 300}); }">
+                Update All (High)
+            </button>
+            <button class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded shadow transition-colors" 
+                onclick="const len = wu.dataStore.price.length; for(let i=1; i<=len; i++){ wu.updateData('price', i, {'adultFare': 1110, 'childFare': 861}); }">
+                Reset All Defaults
+            </button>
+             <button class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-2 px-4 rounded shadow transition-colors" 
+                onclick="wu.addData('price', {'adultFare': 1500 + Math.floor(Math.random() * 500), 'childFare': 500 + Math.floor(Math.random() * 200)})">
+                Add Quote
+            </button>
+        </div>
     </div>
-    <div class="column col-3"></div>
 </div>

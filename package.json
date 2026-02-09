@@ -1,0 +1,35 @@
+{
+  "type": "module",
+  "name": "wirup",
+  "version": "1.0.0",
+  "description": "![Image](https://raw.githubusercontent.com/razaibi/Wirup/master/projectArtwork/Logo.png)",
+  "main": "Wirup.js",
+  "directories": {
+    "doc": "docs",
+    "example": "example"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "build": "vite build",
+    "lint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/razpinator/wirup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/razpinator/wirup/issues"
+  },
+  "homepage": "https://github.com/razpinator/wirup#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "globals": "^17.3.0",
+    "jsdom": "^28.0.0",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  }
+}

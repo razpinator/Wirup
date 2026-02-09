@@ -1,17 +1,21 @@
-<div class="columns mt-8 col-gapless">
-        <div class="column col-3"></div>
-        <div class="column col-6">
+<div class="grid grid-cols-12 gap-0 mt-8">
+        <div class="col-span-12 md:col-start-4 md:col-span-6">
 
-                <ul class="menu">
-                        <li class="menu-item">
-                          <div class="tile tile-centered">
-                            <div class="tile-content">Rockets</div>
+                <ul class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <li class="border-b border-gray-200">
+                          <div class="px-4 py-3 bg-gray-50 flex justify-center items-center">
+                            <div class="font-semibold text-gray-700">Rockets</div>
                           </div>
                         </li>
-                        <li class="divider"></li>
                         <rocketbox datasource="rockets"></rocketbox>
                 </ul>
                 
+                <div class="mt-6 text-center">
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded shadow transition-colors transform active:scale-95 duration-200" 
+                        onclick="wu.addData('rockets', 'Mission ' + (Math.floor(Math.random() * 900) + 100))">
+                        Launch New Mission
+                    </button>
+                </div>
+                
         </div>
-        <div class="column col-3"></div>
 </div>

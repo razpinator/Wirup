@@ -1,12 +1,20 @@
-<div class="columns mt-8 col-gapless">
-    <div class="column col-3"></div>
-    <div class="column col-6">
-        <div class="panel bg-white">
-            <div class="panel-header">
-                <div class="panel-title h2 mb-12">Popular</div>
+<div class="grid grid-cols-12 gap-0 mt-8">
+    <div class="col-span-12 md:col-start-4 md:col-span-6">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800">Popular</h2>
             </div>
             <listbox datasource="popularNames"></listbox>
         </div>
+        
+        <div class="mt-6 text-center">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow transition-colors transform active:scale-95 duration-200" 
+                onclick="const n=[{i:'T',l:'Tesla',f:'Nikola Tesla'},{i:'C',l:'Curie',f:'Marie Curie'},{i:'E',l:'Einstein',f:'Albert Einstein'},{i:'H',l:'Hawking',f:'Stephen Hawking'}]; const r=n[Math.floor(Math.random()*n.length)]; wu.addData('popularNames', { index: wu.dataStore.popularNames.length + 1, initial: r.i, lastname: r.l, fullname: r.f })">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    Add Legend
+                </span>
+            </button>
+        </div>
     </div>
-    <div class="column col-3"></div>
 </div>

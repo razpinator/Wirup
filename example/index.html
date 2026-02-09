@@ -6,64 +6,54 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Spectre.css CSS Framework is a lightweight, responsive and modern CSS framework for faster and extensible development. Spectre provides basic styles for typography and elements, flexbox based responsive layout system, pure CSS components and utilities with best practice coding and consistent design language.">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/razaibi/wirup@master/example/css/spectre.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/razaibi/wirup@master/example/css/spectre-exp.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/razaibi/wirup@master/example/css/spectre-icons.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/razaibi/wirup@master/example/css/custom.css">
+    <meta name="description" content="Wirup Example using Tailwind CSS">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 
-<body>
-    <header class="navbar custom-nav">
-        <section class="navbar-section">
-            <a href="https://www.github.com/razaibi/wirup" class="btn btn-link dropdown-toggle" tabindex="0" target="_blank">
-                <img src="https://cdn.jsdelivr.net/gh/razaibi/wirup@master/example/img/wu.png" class="logo-img" />
-            </a>
-            <!-- Dropdown Menu -->
-            <div class="dropdown">
-                <a class="btn btn-link dropdown-toggle" tabindex="0">
-                    Go To <i class="icon icon-caret"></i>
+<body class="bg-gray-50">
+    <header class="navbar bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <section class="navbar-section">
+                <a href="https://www.github.com/razaibi/wirup" class="inline-block" tabindex="0" target="_blank">
+                    <img src="img/wu.png" class="h-10 w-auto" />
                 </a>
-                <!-- Dropdown menu links -->
-                <ul class="menu">
-                    <li class="menu-item">
-                        <a id="peopleLink">Popular</a>
-                    </li>
-                    <li class="menu-item">
-                        <a id="rocketLink">Rockets</a>
-                    </li>
-                    <li class="menu-item">
-                        <a id="priceLink">Prices</a>
-                    </li>
-                </ul>
+            </section>
+            
+            <div class="relative group">
+                <button class="flex items-center text-gray-700 hover:text-blue-600 font-semibold focus:outline-none py-2 px-1">
+                    Go To 
+                    <svg class="w-4 h-4 ml-1 transform group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <!-- Dropdown menu -->
+                <!-- Use pt-2 to create an invisible bridge between button and menu to prevent closing when moving mouse -->
+                <div class="absolute right-0 pt-2 w-48 hidden group-hover:block z-50">
+                    <div class="bg-white rounded-md shadow-lg border border-gray-200 overflow-hidden">
+                        <a id="peopleLink" class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer border-b border-gray-100 last:border-0 transition-colors">Popular</a>
+                        <a id="rocketLink" class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer border-b border-gray-100 last:border-0 transition-colors">Rockets</a>
+                        <a id="priceLink" class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer border-b border-gray-100 last:border-0 transition-colors">Prices</a>
+                    </div>
+                </div>
             </div>
-        </section>
-
-
+        </div>
     </header>
-    <div class="content mt-10">
+    <div class="content mt-10 min-h-[60vh]">
 
         <!-- Adjusted Main Content -->
-        <div class="container" id="contentBody">
+        <div class="container mx-auto px-4" id="contentBody">
            
         </div>
     </div>
 
 
-    <div class="columns mt-8">
-        <div class="column col-3"></div>
-        <div class="column col-6 col-gapless text-center">
-            <div class="text-tiny">Powered by <a href="https://github.com/razaibi/wirup" target="_blank">Wirup</a></div>
-        </div>
-        <div class="column col-3">
+    <div class="mt-8 py-8 border-t">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+             Powered by <a href="https://github.com/razaibi/wirup" target="_blank" class="text-blue-600 hover:underline">Wirup</a>
         </div>
     </div>
 
-    
-
-    
 </body>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/razaibi/wirup@master/Wirup.js"></script>
+<script type="text/javascript" src="Wirup.js"></script>
 <script type="text/javascript">
 
 
