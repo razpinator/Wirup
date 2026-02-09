@@ -16,17 +16,40 @@ export const setUpdateComponentsCallback = (cb) => {
 };
 
 export const registerData = (dataItemName, value) => {
-  Object.defineProperty(dataStore, dataItemName, {
-    get: function () {
-      return this["_" + dataItemName];
-    },
-    set: function (newValue) {
-      this["_" + dataItemName] = newValue;
-      updateComponentsCallback(dataItemName);
-    },
-    configurable: true // Good for testing
-  });
-  dataStore[dataItemName] = value;
+    let _data = new Proxy(value, {
+        set: (target, property, value) => {
+            target[property] = value;
+            updateComponentsCallback(dataItemName);
+            return true;
+        },
+        deleteProperty: (target, property) => {
+            delete target[property];
+            updateComponentsCallback(dataItemName);
+            return true;
+        }
+    });
+
+    Object.defineProperty(dataStore, dataItemName, {
+        get: function () {
+            return _data;
+        },
+        set: function (newValue) {
+            _data = new Proxy(newValue, {
+                set: (target, property, value) => {
+                    target[property] = value;
+                    updateComponentsCallback(dataItemName);
+                    return true;
+                },
+                deleteProperty: (target, property) => {
+                    delete target[property];
+                    updateComponentsCallback(dataItemName);
+                    return true;
+                }
+            });
+            updateComponentsCallback(dataItemName);
+        },
+        configurable: true
+    });
 };
 
 export const addData = (dataItemName, newData) => {
@@ -53,7 +76,6 @@ export const addData = (dataItemName, newData) => {
   
   const currentData = dataStore[dataItemName];
   currentData.push(newData);
-  dataStore[dataItemName] = currentData; // Triggers setter
 };
 
 export const findIndexByKey = (dataSourceName, keyName, keyValue) => {
@@ -74,12 +96,10 @@ export const updateData = (dataItemName, position, newData) => {
   let targetIndex = position - 1 < 0 ? 0 : position - 1;
   
   currentData[targetIndex] = newData;
-  dataStore[dataItemName] = currentData; // Triggers setter
 };
 
 export const removeData = (dataSourceName, position) => {
   const currentData = dataStore[dataSourceName];
   let targetIndex = position - 1 < 0 ? 0 : position - 1;
   currentData.splice(targetIndex, 1);
-  dataStore[dataSourceName] = currentData; // Triggers setter
 };
