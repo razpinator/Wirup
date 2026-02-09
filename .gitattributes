@@ -1,1 +1,5 @@
-css/* linguist-vendored
+example/css/** linguist-vendored
+example/Wirup.js linguist-vendored
+Wirup.min.js linguist-generated
+dist/** linguist-generated
+
