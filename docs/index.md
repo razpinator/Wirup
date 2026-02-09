@@ -289,7 +289,7 @@ Wirup strictly recommends against using these traces to pepper the experience wi
 
 >Once a component is defined and its data source setup, its iterative elements and automatically bound to the data source with `one-way-data-binding`.
 
->Any changes in the data source object, instantly updates the DOM component. This is done using a `polling` approach where the state of the data source is constantly observed.
+>Any changes in the data source object, instantly updates the DOM component. This is done using `reactive` setters ensuring components are updated immediately when data changes.
 
 ## The **wu** Object
 
