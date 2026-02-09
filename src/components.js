@@ -1,4 +1,5 @@
 import { dataStore } from './data.js';
+import { sanitize } from './utils.js';
 
 export const components = {};
 
@@ -22,19 +23,21 @@ export const buildComponent = (componentName, datasourceName) => {
       return "";
   }
 
+  const safeData = sanitize(dataSource);
+
   switch (dataSourceType) {
     case "object":
-      if (Array.isArray(dataSource)) {
-        output = dataSource.map((item) => {
+      if (Array.isArray(safeData)) {
+        output = safeData.map((item) => {
           return components[componentName](item);
         });
       } else {
-        output.push(components[componentName](dataSource));
+        output.push(components[componentName](safeData));
       }
       break;
 
     case "string":
-      output.push(components[componentName](dataSource));
+      output.push(components[componentName](safeData));
       break;
 
     default:
@@ -54,19 +57,20 @@ export const buildComponents = (componentNames, datasourceNames) => {
      if(!components[componentName]) return;
 
     const dataSourceType = typeof dataSource;
+    const safeData = sanitize(dataSource);
 
     switch (dataSourceType) {
       case "object":
-        if (Array.isArray(dataSource)) {
+        if (Array.isArray(safeData)) {
           output = output.concat(
-            dataSource.map((item) => components[componentName](item))
+            safeData.map((item) => components[componentName](item))
           );
         } else {
-          output.push(components[componentName](dataSource));
+          output.push(components[componentName](safeData));
         }
         break;
       case "string":
-        output.push(components[componentName](dataSource));
+        output.push(components[componentName](safeData));
         break;
 
       default:

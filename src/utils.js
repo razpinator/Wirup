@@ -41,3 +41,30 @@ export const loadScriptsFromFolder = (folderPath, scriptNames) => {
     console.error(`Error in loadScriptsFromFolder: ${error}`);
   });
 };
+
+export const escapeHtml = (unsafe) => {
+  if (typeof unsafe !== 'string') return unsafe;
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
+export const sanitize = (data) => {
+  if (typeof data === 'string') {
+    return escapeHtml(data);
+  }
+  if (Array.isArray(data)) {
+    return data.map(item => sanitize(item));
+  }
+  if (typeof data === 'object' && data !== null) {
+    const safeObj = {};
+    Object.keys(data).forEach(key => {
+      safeObj[key] = sanitize(data[key]);
+    });
+    return safeObj;
+  }
+  return data;
+};
