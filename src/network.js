@@ -1,28 +1,28 @@
-export const wijax = (callType, url, contentType, callback) => {
-  return new Promise((resolve, reject) => {
-    const httpRequest = new XMLHttpRequest();
-    httpRequest.open(callType, url, true);
-    httpRequest.setRequestHeader("Content-Type", contentType);
-    httpRequest.setRequestHeader("cache-control", "no-cache");
-    httpRequest.setRequestHeader("expires", "0");
-    httpRequest.setRequestHeader("expires", "Tue, 01 Jan 1980 1:00:00 GMT");
-    httpRequest.setRequestHeader("pragma", "no-cache");
-    httpRequest.onreadystatechange = () => {
-      if (httpRequest.readyState !== 4) {
-        return;
-      }
-      if (httpRequest.status === 200) {
-        if (callback) {
-          resolve(callback(httpRequest.responseText));
-        } else {
-          resolve(httpRequest.responseText);
-        }
-      } else {
-        const error =
-          httpRequest.statusText || "Your ajax request threw an error.";
-        reject(error);
-      }
-    };
-    httpRequest.send();
-  });
+export const wijax = async (callType, url, contentType, callback) => {
+  try {
+    const response = await fetch(url, {
+      method: callType,
+      headers: {
+        "Content-Type": contentType,
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache"
+      },
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      const error = response.statusText || "Your ajax request threw an error.";
+      throw error;
+    }
+
+    const responseText = await response.text();
+
+    if (callback) {
+      return callback(responseText);
+    } else {
+      return responseText;
+    }
+  } catch (error) {
+    throw error;
+  }
 };
