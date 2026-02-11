@@ -1,1 +1,461 @@
-var wirup=(function(){"use strict";const p=e=>document.getElementById(e),B=e=>{try{return JSON.parse(window[e])}catch{return window[e]}},A=e=>new Promise((t,r)=>{let n=document.createElement("script");n.type="text/javascript",n.src=e,document.getElementsByTagName("head")[0].appendChild(n),n.onload=()=>{t()},n.onerror=()=>{r(`Failed to load script: ${e}`)}}),F=(e,t)=>new Promise((r,n)=>{const o=t.map(s=>A(`${e}/${s}`));Promise.all(o).then(r).catch(s=>{console.error(`Error loading scripts from folder: ${s}`),n(s)})}).catch(r=>{console.error(`Error in loadScriptsFromFolder: ${r}`)}),O=e=>typeof e!="string"?e:e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"),f=e=>{if(typeof e=="string")return O(e);if(Array.isArray(e))return e.map(t=>f(t));if(typeof e=="object"&&e!==null){const t={};return Object.keys(e).forEach(r=>{t[r]=f(e[r])}),t}return e},E=async(e,t,r,n)=>{try{const o=await fetch(t,{method:e,headers:{"Content-Type":r,Pragma:"no-cache","Cache-Control":"no-cache"},cache:"no-store"});if(!o.ok)throw o.statusText||"Your ajax request threw an error.";const s=await o.text();return n?n(s):s}catch(o){throw o}};let P="";const v="wuActions",H=e=>{P=e},g=(e,t,r)=>{const o=new Date().getTime(),s={name:e,element:t,comment:r,profile:P,timestamp:o},a=localStorage.getItem(v)||"",l=a?",":"";localStorage.setItem(v,a+l+JSON.stringify(s))},c={};let d=e=>{console.warn("updateComponentsCallback not registered",e)};const R=e=>{d=e},U=(e,t)=>{let r=t;typeof t=="object"&&t!==null&&(r=new Proxy(t,{set:(n,o,s)=>(n[o]=s,d(e),!0),deleteProperty:(n,o)=>(delete n[o],d(e),!0)})),Object.defineProperty(c,e,{get:function(){return r},set:function(n){typeof n=="object"&&n!==null?r=new Proxy(n,{set:(o,s,a)=>(o[s]=a,d(e),!0),deleteProperty:(o,s)=>(delete o[s],d(e),!0)}):r=n,d(e)},configurable:!0})},q=(e,t)=>{Array.isArray(c[e])||c[e],c[e].push(t)},M=(e,t,r)=>{if(!c[e])throw new Error(`Data source '${e}' not found in dataStore`);return c[e].findIndex(o=>o[t]===r)},_=(e,t,r)=>{const n=c[e];let o=t-1<0?0:t-1;n[o]=r},z=(e,t)=>{const r=c[e];let n=t-1<0?0:t-1;r.splice(n,1)},i={},I=(e,t)=>{i[e]=t},h=(e,t)=>{let r=[];const n=c[t];if(!i[e])return console.warn(`Component ${e} not found`),"";const o=typeof n;if(n==null)return"";const s=f(n);switch(o){case"object":Array.isArray(s)?r=s.map(a=>i[e](a)):r.push(i[e](s));break;case"string":r.push(i[e](s));break;default:throw new Error(`Unsupported data type: ${o}`)}return Array.isArray(r)?r.join(""):r},J=(e,t)=>{let r=[];return e.forEach((n,o)=>{const s=c[t[o]];if(!i[n])return;const a=typeof s,l=f(s);switch(a){case"object":Array.isArray(l)?r=r.concat(l.map(b=>i[n](b))):r.push(i[n](l));break;case"string":r.push(i[n](l));break;default:throw new Error(`Unsupported data type: ${a}`)}}),Array.isArray(r)?r.join(""):r};let m=window.location.pathname,u=[],w={},x=()=>Promise.resolve(),S=()=>{};const K=e=>{x=e},V=e=>{S=e},Y=()=>w,G=e=>{u=JSON.parse(e).views},W=()=>E("GET","views/views.json","application/json; charset=UTF-8",G),Q=(e,t)=>{const r="views/"+u[e].viewFile;return new Promise((n,o)=>{fetch(r+"?").then(s=>{if(s.ok)return s.text();o(`Failed to load HTML view: ${r}`)}).then(s=>{const a=p(t);a?(a.innerHTML=s,n()):o(`Target element with ID "${t}" not found`)}).catch(o)})},k=e=>new Promise((t,r)=>{let n;const o=m||"/";if(!u||u.length===0){r("Views are undefined or empty, cannot load template.");return}for(let s=0;s<u.length;s++){if(u[s].url===o){w={};break}const a=u[s].url;if(a.includes(":")){const l=a.replace(/:([^\s/]+)/g,"([^\\s/]+)"),b=new RegExp("^"+l+"$"),L=o.match(b);if(L){n=s,w={},(a.match(/:([^\s/]+)/g)||[]).map(C=>C.slice(1)).forEach((C,oe)=>{w[C]=L[oe+1]});break}}}n===void 0&&(console.warn(`No view found for the URL: ${o}. Redirecting to default view.`),n=0),Q(n,e).then(()=>t()).catch(s=>{console.error(`Error filling view for URL ${o}: ${s}`),r(`Failed to fill view for ${o}`)})}).catch(t=>{console.error(`Error in getTemplate: ${t}`)}),X=e=>{history.pushState(null,null,e),m=e,k("contentBody").then(()=>{x()})},Z=()=>{window.onpopstate=e=>{m=window.location.pathname,S()}},D=()=>new Promise((e,t)=>{const r=p("contentBody");if(!r){e();return}const n=r.querySelectorAll("[datasource]");[].forEach.call(n,o=>{o.innerHTML=h(o.tagName.toLowerCase(),o.getAttribute("datasource"))}),g("Switched View","CBody","NA"),e()}),N=e=>{const t=p("contentBody");t&&t.querySelectorAll('[datasource="'+e+'"]').forEach(r=>{r.innerHTML=h(r.tagName.toLowerCase(),e),g("Updated Data.",r.tagName.toLowerCase(),"No Comment.")})};K(D),R(N);const T={},ee=e=>{Object.defineProperty(T,"trigger",{get:function(){return this._trigger},set:function(t){this._trigger=t,typeof window[t]=="function"&&window[t]()}}),T.trigger=e},te=e=>{if(typeof window[e]=="function")return window[e]()},re=e=>new Promise((t,r)=>{let n=["components.js"];e?.components&&Array.isArray(e.components)&&e.components.length>0&&(n=e.components),F("components",n).then(()=>{W().then(()=>{k("contentBody").then(()=>{D().then(()=>{Z(),typeof e.callbackName<"u"&&te(e.callbackName),t()})})})})}),j=e=>{re(e)};V(()=>j());const y={},ne=(e,t)=>{y[e]=t};typeof document<"u"&&document.addEventListener("click",e=>{let t=e.target;for(;t&&t!==document;){if(t.hasAttribute&&t.hasAttribute("wu-click")){const r=t.getAttribute("wu-click"),n=t.getAttribute("wu-data");y[r]&&y[r](e,n);break}t=t.parentNode}});const $={wx:p,wijax:E,jsonize:B,loadScript:A,registerComponent:I,buildComponent:h,buildComponents:J,components:i,registerProfile:H,registerAction:g,registerEventHandler:ne,navigateTo:X,getRouteParams:Y,registerData:U,addData:q,findIndexByKey:M,updateData:_,removeData:z,dataStore:c,onLoad:ee,init:j};return typeof window<"u"&&(window.wu=$),$})();
+var wirup = (function() {
+  "use strict";
+  const getElement = (elementId) => {
+    return document.getElementById(elementId);
+  };
+  const jsonize = (objectName) => {
+    try {
+      return JSON.parse(window[objectName]);
+    } catch (e) {
+      return window[objectName];
+    }
+  };
+  const loadScript = (scriptPath) => {
+    return new Promise((resolve, reject) => {
+      let newScript = document.createElement("script");
+      newScript.type = "text/javascript";
+      newScript.src = scriptPath;
+      document.getElementsByTagName("head")[0].appendChild(newScript);
+      newScript.onload = () => {
+        resolve();
+      };
+      newScript.onerror = () => {
+        reject(`Failed to load script: ${scriptPath}`);
+      };
+    });
+  };
+  const loadScriptsFromFolder = (folderPath, scriptNames) => {
+    return new Promise((resolve, reject) => {
+      const promises = scriptNames.map((scriptName) => {
+        return loadScript(`${folderPath}/${scriptName}`);
+      });
+      Promise.all(promises).then(resolve).catch((err) => {
+        console.error(`Error loading scripts from folder: ${err}`);
+        reject(err);
+      });
+    }).catch((error) => {
+      console.error(`Error in loadScriptsFromFolder: ${error}`);
+    });
+  };
+  const escapeHtml = (unsafe) => {
+    if (typeof unsafe !== "string") return unsafe;
+    return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  };
+  const sanitize = (data) => {
+    if (typeof data === "string") {
+      return escapeHtml(data);
+    }
+    if (Array.isArray(data)) {
+      return data.map((item) => sanitize(item));
+    }
+    if (typeof data === "object" && data !== null) {
+      const safeObj = {};
+      Object.keys(data).forEach((key) => {
+        safeObj[key] = sanitize(data[key]);
+      });
+      return safeObj;
+    }
+    return data;
+  };
+  const wijax = async (callType, url, contentType, callback) => {
+    try {
+      const response = await fetch(url, {
+        method: callType,
+        headers: {
+          "Content-Type": contentType,
+          "Pragma": "no-cache",
+          "Cache-Control": "no-cache"
+        },
+        cache: "no-store"
+      });
+      if (!response.ok) {
+        const error = response.statusText || "Your ajax request threw an error.";
+        throw error;
+      }
+      const responseText = await response.text();
+      if (callback) {
+        return callback(responseText);
+      } else {
+        return responseText;
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+  let profile = "";
+  const ACTIONS_KEY = "wuActions";
+  const registerProfile = (newProfile) => {
+    profile = newProfile;
+  };
+  const registerAction = (actionName, actionElement, comment) => {
+    const date = /* @__PURE__ */ new Date();
+    const timestamp = date.getTime();
+    const action = {
+      name: actionName,
+      element: actionElement,
+      comment,
+      profile,
+      timestamp
+    };
+    const currentActions = localStorage.getItem(ACTIONS_KEY) || "";
+    const separator = currentActions ? "," : "";
+    localStorage.setItem(ACTIONS_KEY, currentActions + separator + JSON.stringify(action));
+  };
+  const dataStore = {};
+  let updateComponentsCallback = (dataSourceName) => {
+    console.warn("updateComponentsCallback not registered", dataSourceName);
+  };
+  const setUpdateComponentsCallback = (cb) => {
+    updateComponentsCallback = cb;
+  };
+  const registerData = (dataItemName, value) => {
+    let _data = value;
+    if (typeof value === "object" && value !== null) {
+      _data = new Proxy(value, {
+        set: (target, property, value2) => {
+          target[property] = value2;
+          updateComponentsCallback(dataItemName);
+          return true;
+        },
+        deleteProperty: (target, property) => {
+          delete target[property];
+          updateComponentsCallback(dataItemName);
+          return true;
+        }
+      });
+    }
+    Object.defineProperty(dataStore, dataItemName, {
+      get: function() {
+        return _data;
+      },
+      set: function(newValue) {
+        if (typeof newValue === "object" && newValue !== null) {
+          _data = new Proxy(newValue, {
+            set: (target, property, value2) => {
+              target[property] = value2;
+              updateComponentsCallback(dataItemName);
+              return true;
+            },
+            deleteProperty: (target, property) => {
+              delete target[property];
+              updateComponentsCallback(dataItemName);
+              return true;
+            }
+          });
+        } else {
+          _data = newValue;
+        }
+        updateComponentsCallback(dataItemName);
+      },
+      configurable: true
+    });
+  };
+  const addData = (dataItemName, newData) => {
+    if (!Array.isArray(dataStore[dataItemName])) {
+      dataStore[dataItemName];
+    }
+    const currentData = dataStore[dataItemName];
+    currentData.push(newData);
+  };
+  const findIndexByKey = (dataSourceName, keyName, keyValue) => {
+    if (!dataStore[dataSourceName]) {
+      throw new Error(`Data source '${dataSourceName}' not found in dataStore`);
+    }
+    const index = dataStore[dataSourceName].findIndex((dataItem) => {
+      return dataItem[keyName] === keyValue;
+    });
+    return index;
+  };
+  const updateData = (dataItemName, position, newData) => {
+    const currentData = dataStore[dataItemName];
+    let targetIndex = position - 1 < 0 ? 0 : position - 1;
+    currentData[targetIndex] = newData;
+  };
+  const removeData = (dataSourceName, position) => {
+    const currentData = dataStore[dataSourceName];
+    let targetIndex = position - 1 < 0 ? 0 : position - 1;
+    currentData.splice(targetIndex, 1);
+  };
+  const components = {};
+  const registerComponent = (componentName, template) => {
+    components[componentName] = template;
+  };
+  const buildComponent = (componentName, datasourceName) => {
+    let output = [];
+    const dataSource = dataStore[datasourceName];
+    if (!components[componentName]) {
+      console.warn(`Component ${componentName} not found`);
+      return "";
+    }
+    const dataSourceType = typeof dataSource;
+    if (dataSource === void 0 || dataSource === null) {
+      return "";
+    }
+    const safeData = sanitize(dataSource);
+    switch (dataSourceType) {
+      case "object":
+        if (Array.isArray(safeData)) {
+          output = safeData.map((item) => {
+            return components[componentName](item);
+          });
+        } else {
+          output.push(components[componentName](safeData));
+        }
+        break;
+      case "string":
+        output.push(components[componentName](safeData));
+        break;
+      default:
+        throw new Error(`Unsupported data type: ${dataSourceType}`);
+    }
+    return Array.isArray(output) ? output.join("") : output;
+  };
+  const buildComponents = (componentNames, datasourceNames) => {
+    let output = [];
+    componentNames.forEach((componentName, index) => {
+      const dataSource = dataStore[datasourceNames[index]];
+      if (!components[componentName]) return;
+      const dataSourceType = typeof dataSource;
+      const safeData = sanitize(dataSource);
+      switch (dataSourceType) {
+        case "object":
+          if (Array.isArray(safeData)) {
+            output = output.concat(
+              safeData.map((item) => components[componentName](item))
+            );
+          } else {
+            output.push(components[componentName](safeData));
+          }
+          break;
+        case "string":
+          output.push(components[componentName](safeData));
+          break;
+        default:
+          throw new Error(`Unsupported data type: ${dataSourceType}`);
+      }
+    });
+    return Array.isArray(output) ? output.join("") : output;
+  };
+  let appLocation = window.location.pathname;
+  let views = [];
+  let routeParams = {};
+  let renderViewComponents$1 = () => Promise.resolve();
+  let initCallback = () => {
+  };
+  const setRenderViewComponentsCallback = (cb) => {
+    renderViewComponents$1 = cb;
+  };
+  const setInitCallback = (cb) => {
+    initCallback = cb;
+  };
+  const getRouteParams = () => routeParams;
+  const getViews = (data) => {
+    views = JSON.parse(data)["views"];
+  };
+  const registerViews = () => {
+    return wijax(
+      "GET",
+      "views/views.json",
+      "application/json; charset=UTF-8",
+      getViews
+    );
+  };
+  const fillView = (index, targetElementId) => {
+    const htmlFilePath = "views/" + views[index]["viewFile"];
+    return new Promise((resolve, reject) => {
+      fetch(htmlFilePath + "?").then((response) => {
+        if (response.ok) {
+          return response.text();
+        } else {
+          reject(`Failed to load HTML view: ${htmlFilePath}`);
+        }
+      }).then((htmlContent) => {
+        const targetElement = getElement(targetElementId);
+        if (targetElement) {
+          targetElement.innerHTML = htmlContent;
+          resolve();
+        } else {
+          reject(`Target element with ID "${targetElementId}" not found`);
+        }
+      }).catch(reject);
+    });
+  };
+  const getTemplate = (target) => {
+    return new Promise((resolve, reject) => {
+      let index;
+      const url = appLocation || "/";
+      if (!views || views.length === 0) {
+        reject("Views are undefined or empty, cannot load template.");
+        return;
+      }
+      for (let i = 0; i < views.length; i++) {
+        if (views[i]["url"] === url) {
+          index = i;
+          routeParams = {};
+          break;
+        }
+        const routePattern = views[i]["url"];
+        if (routePattern.includes(":")) {
+          const regexPattern = routePattern.replace(/:([^\s/]+)/g, "([^\\s/]+)");
+          const matcher = new RegExp("^" + regexPattern + "$");
+          const match = url.match(matcher);
+          if (match) {
+            index = i;
+            routeParams = {};
+            const paramNames = (routePattern.match(/:([^\s/]+)/g) || []).map((s) => s.slice(1));
+            paramNames.forEach((name, idx) => {
+              routeParams[name] = match[idx + 1];
+            });
+            break;
+          }
+        }
+      }
+      if (index === void 0) {
+        console.warn(`No view found for the URL: ${url}. Redirecting to default view.`);
+        index = 0;
+      }
+      fillView(index, target).then(() => resolve()).catch((error) => {
+        console.error(`Error filling view for URL ${url}: ${error}`);
+        reject(`Failed to fill view for ${url}`);
+      });
+    }).catch((error) => {
+      console.error(`Error in getTemplate: ${error}`);
+    });
+  };
+  const navigateTo = (url) => {
+    history.pushState(null, null, url);
+    appLocation = url;
+    getTemplate("contentBody").then(() => {
+      renderViewComponents$1();
+    });
+  };
+  const bindRouter = () => {
+    window.onpopstate = (event) => {
+      appLocation = window.location.pathname;
+      initCallback();
+    };
+  };
+  const renderViewComponents = () => {
+    return new Promise((resolve, reject) => {
+      const contentBody = getElement("contentBody");
+      if (!contentBody) {
+        resolve();
+        return;
+      }
+      const viewComponents = contentBody.querySelectorAll("[datasource]");
+      [].forEach.call(viewComponents, (component) => {
+        component.innerHTML = buildComponent(
+          component.tagName.toLowerCase(),
+          component.getAttribute("datasource")
+        );
+      });
+      registerAction("Switched View", "CBody", "NA");
+      resolve();
+    });
+  };
+  const updateComponentsByDataSourceName = (dataSourceName) => {
+    const contentBody = getElement("contentBody");
+    if (!contentBody) return;
+    contentBody.querySelectorAll('[datasource="' + dataSourceName + '"]').forEach((elem) => {
+      elem.innerHTML = buildComponent(
+        elem.tagName.toLowerCase(),
+        dataSourceName
+      );
+      registerAction("Updated Data.", elem.tagName.toLowerCase(), "No Comment.");
+    });
+  };
+  setRenderViewComponentsCallback(renderViewComponents);
+  setUpdateComponentsCallback(updateComponentsByDataSourceName);
+  const loadObserver = {};
+  const onLoad = (value) => {
+    Object.defineProperty(loadObserver, "trigger", {
+      get: function() {
+        return this["_trigger"];
+      },
+      set: function(newValue) {
+        this["_trigger"] = newValue;
+        if (typeof window[newValue] === "function") {
+          window[newValue]();
+        }
+      }
+    });
+    loadObserver["trigger"] = value;
+  };
+  const onContentLoad = (functionName) => {
+    if (typeof window[functionName] === "function") {
+      return window[functionName]();
+    }
+  };
+  const renderAll = (config) => {
+    return new Promise((resolve, reject) => {
+      let componentsFiles = ["components.js"];
+      if (config?.components && Array.isArray(config.components) && config.components.length > 0) {
+        componentsFiles = config.components;
+      }
+      loadScriptsFromFolder("components", componentsFiles).then(() => {
+        registerViews().then(() => {
+          getTemplate("contentBody").then(() => {
+            renderViewComponents().then(() => {
+              bindRouter();
+              if (typeof config.callbackName !== "undefined") {
+                onContentLoad(config.callbackName);
+              }
+              resolve();
+            });
+          });
+        });
+      });
+    });
+  };
+  const init = (config) => {
+    renderAll(config);
+  };
+  setInitCallback(() => init());
+  const eventHandlers = {};
+  const registerEventHandler = (eventName, handler) => {
+    eventHandlers[eventName] = handler;
+  };
+  if (typeof document !== "undefined") {
+    document.addEventListener("click", (e) => {
+      let target = e.target;
+      while (target && target !== document) {
+        if (target.hasAttribute && target.hasAttribute("wu-click")) {
+          const handlerName = target.getAttribute("wu-click");
+          const data = target.getAttribute("wu-data");
+          if (eventHandlers[handlerName]) {
+            eventHandlers[handlerName](e, data);
+          }
+          break;
+        }
+        target = target.parentNode;
+      }
+    });
+  }
+  const Wirup = {
+    wx: getElement,
+    wijax,
+    jsonize,
+    loadScript,
+    registerComponent,
+    buildComponent,
+    buildComponents,
+    components,
+    registerProfile,
+    registerAction,
+    registerEventHandler,
+    navigateTo,
+    getRouteParams,
+    registerData,
+    addData,
+    findIndexByKey,
+    updateData,
+    removeData,
+    dataStore,
+    onLoad,
+    init
+  };
+  if (typeof window !== "undefined") {
+    window.wu = Wirup;
+  }
+  return Wirup;
+})();

@@ -1,8 +1,11 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
+const minify = process.env.BUILD_MINIFIED !== 'false';
+
 export default defineConfig({
   build: {
+    minify,
     lib: {
       entry: resolve(__dirname, 'src/index.js'),
       name: 'wirup',

@@ -11,6 +11,8 @@
   "scripts": {
     "test": "vitest run",
     "build": "vite build",
+    "build:unminified": "BUILD_MINIFIED=false vite build",
+    "update-bundles": "npm run build:unminified && cp dist/Wirup.js Wirup.js && npm run build && cp dist/Wirup.js Wirup.min.js && cp dist/Wirup.js example/Wirup.js",
     "lint": "eslint src"
   },
   "repository": {

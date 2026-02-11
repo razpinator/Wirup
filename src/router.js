@@ -69,6 +69,7 @@ export const getTemplate = (target) => {
 
         for (let i = 0; i < views.length; i++) {
             if (views[i]["url"] === url) {
+                index = i;
                 routeParams = {};
                 break;
             }
